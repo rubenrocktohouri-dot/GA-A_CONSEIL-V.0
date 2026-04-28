@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RELYAS ADMIN | SOC Agricole</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --forest: #0a1f0a;
+            --forest-soft: #133213;
+            --cream: #f6f1e5;
+            --white: #ffffff;
+            --critical: #ff4757;
+            --warning: #ffa502;
+            --success: #2ed573;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.18), transparent 25%),
+                        linear-gradient(135deg, #081a08, #123412);
+            color: var(--white);
+            min-height: 100vh;
+        }
+
+        .soc-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: 70px 1fr;
+            min-height: 100vh;
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .soc-header {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+        }
+
+        .soc-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .soc-title i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+
+        .soc-title h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--gold);
+        }
+
+        .soc-title span {
+            color: var(--success);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .soc-header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout {
+            text-decoration: none;
+            color: var(--forest);
+            background: linear-gradient(135deg, var(--gold), #efcf63);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s ease;
+        }
+
+        .logout:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ========== SIDEBAR GAUCHE ========== */
+        .soc-left {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(18px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat-card strong {
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .stat-card span {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.66);
+        }
+
+        .alerts-section {
+            margin-top: 12px;
+        }
+
+        .alerts-section h3 {
+            margin: 0 0 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .alert-item {
+            background: rgba(255, 71, 87, 0.15);
+            border-left: 3px solid var(--critical);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .alert-item.warning {
+            background: rgba(255, 165, 2, 0.15);
+            border-left-color: var(--warning);
+        }
+
+        /* ========== DASHBOARD CENTRAL ========== */
+        .soc-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .telemetry-card,
+        .sad-form {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 18px;
+        }
+
+        .telemetry-card {
+            grid-column: 1;
+        }
+
+        .sad-form {
+            grid-column: 2;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .card-title i {
+            font-size: 1.2rem;
+        }
+
+        .telemetry-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .telemetry-item:last-child {
+            border-bottom: none;
+        }
+
+        .sad-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .sad-form button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--gold), #e8c55b);
+            border: none;
+            border-radius: 12px;
+            color: var(--forest);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .sad-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .fleet-status {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            padding: 18px;
+        }
+
+        .fleet-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.online {
+            background: rgba(46, 213, 115, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.offline {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--critical);
+        }
+
+        /* ========== PANNEAU DROIT (COMMUNICATION) ========== */
+        .soc-right {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(18px);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .user-button {
+            width: 100%;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .user-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-button.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(255, 255, 255, 0.1));
+            border-color: rgba(212, 175, 55, 0.35);
+        }
+
+        .user-button strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .user-button span {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.66);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bubble {
+            max-width: 95%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+        }
+
+        .bubble.me {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--gold), #e7c55a);
+            color: var(--forest);
+        }
+
+        .bubble.other {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .bubble-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0.88;
+        }
+
+        .message-composer {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .message-composer input {
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            outline: none;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--forest);
+        }
+
+        .message-composer button {
+            border: none;
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--gold), #e8c55b);
+            color: var(--forest);
+            font-size: 0.95rem;
+            transition: 0.2s ease;
+        }
+
+        .message-composer button:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1400px) {
+            .soc-container {
+                grid-template-columns: 1fr;
+            }
+            .soc-left, .soc-right, .soc-center {
+                grid-column: auto;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="soc-container">
+        <!-- HEADER -->
+        <div class="soc-header">
+            <div class="soc-title">
+                <i class="fas fa-radar"></i>
+                <h1>RELYAS ADMIN</h1>
+                <span>SOC Agricole</span>
+            </div>
+            <div class="soc-header-right">
+                <span>{{ user.nom }}</span>
+                <a class="logout" href="/logout">Se déconnecter</a>
+            </div>
+        </div>
+
+        <!-- SIDEBAR GAUCHE: État Système & Alertes -->
+        <div class="soc-left">
+            <h2 style="margin: 0 0 8px; font-size: 1rem; color: var(--gold);">État du Système</h2>
+
+            <div class="stat-card">
+                <strong id="totalFarmers">0</strong>
+                <span>Planteurs actifs</span>
+            </div>
+
+            <div class="stat-card">
+                <strong><span id="onlineDrones">0</span> / <span id="totalDrones">0</span></strong>
+                <span>Drones en ligne</span>
+            </div>
+
+            <div class="stat-card">
+                <strong id="criticalAlerts" style="color: var(--critical);">0</strong>
+                <span>Alertes CRITIQUES 🚨</span>
+            </div>
+
+            <div class="alerts-section">
+                <h3>Alertes Actives</h3>
+                <div id="alertsList"></div>
+            </div>
+        </div>
+
+        <!-- CENTRE: Dashboard Télémétrie & SAD -->
+        <div class="soc-center">
+            <div class="dashboard-grid">
+                <!-- Télémétrie -->
+                <div class="telemetry-card">
+                    <div class="card-title">
+                        <i class="fas fa-satellite"></i>
+                        Données Télémétrie
+                    </div>
+                    <select id="farmerSelect" style="width: 100%; padding: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); color: var(--white); border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem;">
+                        <option value="">Sélectionnez un planteur...</option>
+                    </select>
+                    <div id="telemetryData">
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Aucune donnée</p>
+                    </div>
+                </div>
+
+                <!-- Système d'Aide à la Décision (SAD) -->
+                <div class="sad-form">
+                    <div class="card-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Recommandation (SAD)
+                    </div>
+                    <select id="recommendationFarmer" style="width: 100%; padding: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); color: var(--white); border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem;">
+                        <option value="">Sélectionnez un planteur...</option>
+                    </select>
+                    <textarea id="recommendationText" placeholder="Écrivez votre recommandation personnalisée..."></textarea>
+                    <button onclick="sendRecommendation()">
+                        <i class="fas fa-paper-plane"></i> Envoyer
+                    </button>
+                </div>
+            </div>
+
+            <!-- État de la Flotte -->
+            <div class="fleet-status">
+                <div class="card-title">
+                    <i class="fas fa-drones"></i>
+                    État de la Flotte
+                </div>
+                <div id="fleetList"></div>
+            </div>
+        </div>
+
+        <!-- PANNEAU DROIT: Communication -->
+        <div class="soc-right">
+            <h3 style="margin: 0; font-size: 0.95rem; color: var(--gold);">Communications</h3>
+            
+            <div class="search-box">
+                <input type="text" id="userSearch" placeholder="Chercher planteur..." />
+            </div>
+
+            <div class="user-list" id="userList"></div>
+
+            <div class="chat-container">
+                <div class="chat-box" id="chatBox"></div>
+                <div class="message-composer">
+                    <input id="messageInput" type="text" placeholder="Message..." />
+                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const adminUsername = "{{ user.username }}";
+        let selectedUser = null;
+        let farmers = [];
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        // ===== Charger les stats du tableau de bord =====
+        async function loadDashboardStats() {
+            try {
+                const res = await fetch('/get_dashboard_stats');
+                const stats = await res.json();
+                document.getElementById('totalFarmers').innerText = stats.total_farmers;
+                document.getElementById('totalDrones').innerText = stats.total_drones;
+                document.getElementById('onlineDrones').innerText = stats.online_drones;
+                document.getElementById('criticalAlerts').innerText = stats.critical_alerts;
+            } catch (e) {
+                console.error('Erreur stats:', e);
+            }
+        }
+
+        // ===== Charger les alertes =====
+        async function loadAlerts() {
+            try {
+                const res = await fetch('/get_alerts?severity=critical');
+                const alerts = await res.json();
+                const box = document.getElementById('alertsList');
+                if (!alerts.length) {
+                    box.innerHTML = '<div style="font-size: 0.85rem; color: var(--success);">✓ Aucune alerte critique</div>';
+                    return;
+                }
+                box.innerHTML = alerts.slice(0, 5).map(a => `
+                    <div class="alert-item ${a.severity === 'high' ? 'warning' : ''}">
+                        <strong>${a.alert_type}</strong><br>
+                        <small>${escapeHtml(a.message)}</small>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Erreur alertes:', e);
+            }
+        }
+
+        // ===== Charger l'état de la flotte =====
+        async function loadFleetStatus() {
+            try {
+                const res = await fetch('/get_fleet_status');
+                const fleet = await res.json();
+                const box = document.getElementById('fleetList');
+                if (!fleet.length) {
+                    box.innerHTML = '<p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Aucun drone enregistré</p>';
+                    return;
+                }
+                box.innerHTML = fleet.slice(0, 5).map(d => `
+                    <div class="fleet-item">
+                        <div>
+                            <strong style="font-size: 0.9rem;">${d.drone_id}</strong>
+                            <span style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6);">${d.farmer_username}</span>
+                        </div>
+                        <span class="status-badge ${d.status}">${d.status}</span>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Erreur flotte:', e);
+            }
+        }
+
+        // ===== Charger les planteurs =====
+        async function loadFarmers() {
+            try {
+                const res = await fetch('/admin_get_users');
+                farmers = await res.json();
+                
+                // Remplir les selects
+                const selects = ['farmerSelect', 'recommendationFarmer'];
+                selects.forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">Sélectionnez un planteur...</option>' +
+                        farmers.map(f => `<option value="${f.username}">${f.username} - ${f.nom}</option>`).join('');
+                });
+
+                // Remplir la liste d'utilisateurs
+                const userList = document.getElementById('userList');
+                userList.innerHTML = farmers.map(f => `
+                    <button class="user-button ${selectedUser === f.username ? 'active' : ''}" type="button" onclick="selectUser('${f.username}')">
+                        <strong>${f.username}</strong>
+                        <span>${escapeHtml(f.last_message || '')}</span>
+                    </button>
+                `).join('');
+
+                if (!selectedUser && farmers[0]) {
+                    selectUser(farmers[0].username);
+                }
+            } catch (e) {
+                console.error('Erreur planteurs:', e);
+            }
+        }
+
+        // ===== Charger la télémétrie =====
+        async function loadTelemetry() {
+            const farmer = document.getElementById('farmerSelect').value;
+            if (!farmer) {
+                document.getElementById('telemetryData').innerHTML = '<p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Sélectionnez un planteur</p>';
+                return;
+            }
+            try {
+                const res = await fetch(`/get_telemetry_data?farmer_username=${encodeURIComponent(farmer)}`);
+                const data = await res.json();
+                if (!data.timestamp) {
+                    document.getElementById('telemetryData').innerHTML = '<p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Aucune donnée</p>';
+                    return;
+                }
+                document.getElementById('telemetryData').innerHTML = `
+                    <div class="telemetry-item"><span>Humidité</span> <strong>${data.humidity?.toFixed(1) || 'N/A'}%</strong></div>
+                    <div class="telemetry-item"><span>Température</span> <strong>${data.temperature?.toFixed(1) || 'N/A'}°C</strong></div>
+                    <div class="telemetry-item"><span>pH Sol</span> <strong>${data.soil_ph?.toFixed(2) || 'N/A'}</strong></div>
+                    <div class="telemetry-item"><span>Humidité Sol</span> <strong>${data.soil_moisture?.toFixed(1) || 'N/A'}%</strong></div>
+                    <div class="telemetry-item"><span>Azote</span> <strong>${data.nitrogen_level?.toFixed(1) || 'N/A'} mg/kg</strong></div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 8px;">Mis à jour: ${data.timestamp}</div>
+                `;
+            } catch (e) {
+                console.error('Erreur télémétrie:', e);
+            }
+        }
+
+        // ===== Sélectionner un utilisateur =====
+        function selectUser(username) {
+            selectedUser = username;
+            loadFarmers();
+            loadMessages();
+        }
+
+        // ===== Charger les messages =====
+        async function loadMessages() {
+            if (!selectedUser) return;
+            try {
+                const res = await fetch(`/get_messages?destinataire=admin&target_user=${encodeURIComponent(selectedUser)}`);
+                const data = await res.json();
+                const box = document.getElementById('chatBox');
+
+                if (!data.length) {
+                    box.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 20px; font-size: 0.9rem;">Conversation vide</div>';
+                    return;
+                }
+
+                box.innerHTML = data.map(m => `
+                    <div class="bubble ${m.expediteur === adminUsername ? 'me' : 'other'}">
+                        <div class="bubble-name">${escapeHtml(m.expediteur)}</div>
+                        <div>${escapeHtml(m.contenu)}</div>
+                    </div>
+                `).join('');
+                box.scrollTop = box.scrollHeight;
+            } catch (e) {
+                console.error('Erreur messages:', e);
+            }
+        }
+
+        // ===== Envoyer un message =====
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const contenu = input.value.trim();
+            if (!selectedUser || !contenu) return;
+
+            try {
+                await fetch('/admin_send_message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target_username: selectedUser, contenu })
+                });
+                input.value = '';
+                await loadMessages();
+                await loadFarmers();
+            } catch (e) {
+                console.error('Erreur envoi:', e);
+            }
+        }
+
+        // ===== Envoyer une recommandation =====
+        async function sendRecommendation() {
+            const farmer = document.getElementById('recommendationFarmer').value;
+            const content = document.getElementById('recommendationText').value.trim();
+            if (!farmer || !content) {
+                alert('Sélectionnez un planteur et écrivez une recommandation');
+                return;
+            }
+
+            try {
+                const res = await fetch('/send_recommendation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ farmer_username: farmer, content })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    document.getElementById('recommendationText').value = '';
+                    alert('✓ Recommandation envoyée');
+                    await loadFarmers();
+                } else {
+                    alert('Erreur: ' + result.message);
+                }
+            } catch (e) {
+                console.error('Erreur recommandation:', e);
+            }
+        }
+
+        // ===== Event Listeners =====
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        document.getElementById('farmerSelect').addEventListener('change', loadTelemetry);
+        document.getElementById('userSearch').addEventListener('input', (e) => {
+            const filter = e.target.value.toLowerCase();
+            document.querySelectorAll('.user-button').forEach(btn => {
+                btn.style.display = btn.innerText.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+
+        // ===== Chargement initial et polling =====
+        function initializeSOC() {
+            loadDashboardStats();
+            loadAlerts();
+            loadFleetStatus();
+            loadFarmers();
+        }
+
+        initializeSOC();
+        setInterval(() => {
+            loadDashboardStats();
+            loadAlerts();
+            loadFleetStatus();
+            loadFarmers();
+            loadMessages();
+            if (document.getElementById('farmerSelect').value) {
+                loadTelemetry();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

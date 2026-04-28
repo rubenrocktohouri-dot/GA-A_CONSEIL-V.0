@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAÏA-Conseil | Accueil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --forest: #0A1F0A;
+            --white: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Arrière-plan avec l'image de cacao et filtre sombre */
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(rgba(10, 31, 10, 0.7), rgba(10, 31, 10, 0.8)), 
+                        url("/static/fond_gaia.png");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        /* Ajustement du Logo en Cercle Parfait */
+        .logo-wrapper {
+            width: 160px;
+            height: 160px;
+            background-color: white;
+            border: 4px solid var(--gold);
+            border-radius: 50%; /* Rend le conteneur circulaire */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Coupe tout ce qui dépasse du cercle */
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .logo-wrapper img {
+            width: 85%; /* Ajuste la taille du logo à l'intérieur du cercle */
+            height: auto;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 10px 0;
+            letter-spacing: 4px;
+            font-weight: 600;
+            color: var(--gold);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 50px;
+            opacity: 0.95;
+            font-style: italic;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .btn-horizon {
+            padding: 18px 45px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--forest);
+            background: var(--gold);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+        }
+
+        .btn-horizon:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
+            background: var(--white);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <div class="logo-wrapper">
+            <img src="/static/logo_gaia.png" alt="Logo GAÏA-Conseil">
+        </div>
+
+        <h1>GAÏA-CONSEIL</h1>
+        <p>« La voie de l’espoir de l’agriculteur moderne »</p>
+
+        <a href="/login_page" class="btn-horizon">Entrez dans l’horizon</a>
+    </div>
+
+</body>
+</html>

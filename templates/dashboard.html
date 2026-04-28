@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAIA | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --gold: #D4AF37; --forest: #0A1F0A; --bg: #F8F9FA; --w: #ffffff; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); padding-bottom: 90px; }
+        .home-header { background: var(--forest); padding: 50px 25px 90px 25px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; color: var(--w); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .home-header h2 { margin: 0; font-size: 1.8rem; }
+        .home-header p { margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem; }
+        .section-title { padding: 25px 20px 15px 20px; font-size: 1.4rem; font-weight: 600; color: var(--forest); }
+        .container { padding: 0 20px; margin-top: -50px; }
+        .main-card { background: var(--w); border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .sensor-card { background: var(--w); padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+        .sensor-card i { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
+        .sensor-card span { display: block; font-size: 0.7rem; color: #888; font-weight: 600; margin-bottom: 5px; }
+        .sensor-card b { font-size: 1.2rem; color: var(--forest); }
+        #market { background: url('/static/fond_marche.png') center/cover; min-height: 85vh; position: relative; border-radius: 30px 30px 0 0; overflow: hidden; }
+        #market::before { content:""; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,31,10,0.85); }
+        .market-content { position: relative; z-index: 2; padding: 25px; color: white; }
+        #chat { background: url('/static/fond_gaia.png') center/cover; min-height: 85vh; position: relative; border-radius: 30px 30px 0 0; overflow: hidden; }
+        #chat::before { content:""; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,31,10,0.7); backdrop-filter: blur(15px); }
+        .expert-content { position: relative; z-index: 2; padding: 20px; display: flex; flex-direction: column; height: 75vh; }
+        .chat-box { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 12px; }
+        .bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.9rem; line-height: 1.45; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 10px 24px rgba(10,31,10,0.08); }
+        .bubble.me { background: linear-gradient(135deg, #d4af37, #e6c65b); color: var(--forest); align-self: flex-end; border-bottom-right-radius: 2px; border: 1px solid rgba(120, 92, 12, 0.18); }
+        .bubble.other { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
+        #social .bubble.other { background: linear-gradient(135deg, #f4f0e4, #ffffff); border: 1px solid rgba(10,31,10,0.08); color: #132313; box-shadow: 0 8px 22px rgba(10,31,10,0.08); }
+        #social .bubble-name { color: #4d694d; }
+        #chat .bubble.other { background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.18); color: white; }
+        #chat .bubble-name { color: #e6c65b; }
+        #social .chat-box { padding-bottom: 90px; }
+        .bubble-name { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.2px; opacity: 0.92; }
+        .bubble-text { font-size: 0.96rem; font-weight: 400; word-break: break-word; }
+        .bottom-nav { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--forest); height: 75px; border-radius: 25px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000; }
+        .nav-link { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-link.active { color: var(--gold); transform: translateY(-5px); }
+        .nav-link i { font-size: 1.4rem; display: block; }
+        .nav-link span { font-size: 0.65rem; font-weight: 600; margin-top: 4px; display: block; }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeInUp 0.4s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div id="home" class="section active">
+        <div class="home-header">
+            <h2>Bonjour, {{ user.username }}</h2>
+            <p>Votre plantation GAIA est sous controle.</p>
+        </div>
+        <div class="container">
+            <div class="main-card">
+                <div>
+                    <span style="font-size: 0.7rem; color: #888; font-weight: 700; letter-spacing: 1px;">SANTE GLOBALE</span>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: #2E7D32;">Optimale</div>
+                </div>
+                <i class="fa-solid fa-circle-check" style="font-size: 2.5rem; color: #2E7D32;"></i>
+            </div>
+            <div class="sensor-grid">
+                <div class="sensor-card">
+                    <i class="fa-solid fa-temperature-three-quarters"></i>
+                    <span>TEMP. AIR</span>
+                    <b>{{ user.temp }}°C</b>
+                </div>
+                <div class="sensor-card">
+                    <i class="fa-solid fa-droplet"></i>
+                    <span>HUMIDITE SOL</span>
+                    <b>{{ user.liquide }}%</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="social" class="section">
+        <div class="section-title">Espace Communaute</div>
+        <div id="commu-chat" class="chat-box" style="height: 60vh;"></div>
+        <div style="padding:15px; display:flex; gap:10px; background:white; position:fixed; bottom:110px; left:20px; right:20px; border-radius:20px; box-shadow:0 5px 15px rgba(0,0,0,0.05);">
+            <input type="text" id="commuIn" placeholder="Discutez ici..." style="flex:1; border:none; outline:none; font-family:inherit;">
+            <button onclick="send('communaute')" style="background:var(--forest); color:white; border:none; width:45px; height:45px; border-radius:15px;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="market" class="section">
+        <div class="market-content">
+            <h2 style="color:var(--gold); margin-bottom:20px;">Marche Cacao</h2>
+            <div id="cacao-data" style="margin-bottom: 30px;"></div>
+            <h3 style="color: white; margin-bottom: 15px;">Actualites Agricoles</h3>
+            <div id="news-box"></div>
+        </div>
+    </div>
+
+    <div id="chat" class="section">
+        <div class="expert-content">
+            <h2 style="color:var(--gold);">Conseil Expert</h2>
+            <div id="expert-chat" class="chat-box"></div>
+            <div style="display:flex; gap:10px; margin-top:15px; background:rgba(255,255,255,0.1); padding:10px; border-radius:20px; backdrop-filter:blur(10px);">
+                    <div style="display:flex; flex-direction:column; gap:8px; width:100%;">
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <strong style="color:var(--gold);">Messages rapides :</strong>
+                            <div id="userQuickSuggestions" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="expertIn" placeholder="Posez une question..." style="flex:1; background:transparent; border:none; color:white; outline:none; font-family:inherit;">
+                            <button onclick="send('admin')" style="background:var(--gold); border:none; width:45px; height:45px; border-radius:12px; color:var(--forest);"><i class="fa-solid fa-comment-dots"></i></button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-link active" onclick="navTo('home', this)">
+            <i class="fa-solid fa-house"></i><span>Accueil</span>
+        </div>
+        <div class="nav-link" onclick="navTo('social', this)">
+            <i class="fa-solid fa-users"></i><span>Social</span>
+        </div>
+        <div class="nav-link" onclick="navTo('market', this)">
+            <i class="fa-solid fa-chart-line"></i><span>Marche</span>
+        </div>
+        <div class="nav-link" onclick="navTo('chat', this)">
+            <i class="fa-solid fa-user-doctor"></i><span>Expert</span>
+        </div>
+    </nav>
+
+    <script>
+        const myName = "{{ user.username }}";
+        const legacyMyName = "{{ user.nom }}";
+        let currentMediaUser = null;
+        let mediaRecorderUser = null;
+        let recordedChunksUser = [];
+
+        function formatNumber(value, decimals = 0) {
+            if (value === null || value === undefined || Number.isNaN(Number(value))) {
+                return 'N/A';
+            }
+            return Number(value).toLocaleString('fr-FR', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+
+        function navTo(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            if (id === 'social') loadMessages('communaute', 'commu-chat');
+            if (id === 'chat') loadMessages('admin', 'expert-chat');
+            if (id === 'market') { loadNews(); loadCacaoData(); }
+        }
+
+        async function loadMessages(dest, boxId) {
+            const res = await fetch(`/get_messages?destinataire=${dest}`);
+            const data = await res.json();
+            const box = document.getElementById(boxId);
+            box.innerHTML = data.map(m => `
+                <div class="bubble ${(m.display_expediteur === myName || m.expediteur === legacyMyName) ? 'me' : 'other'}">
+                    <div class="bubble-name">${boxId === 'commu-chat' ? myName : ((m.display_expediteur === myName || m.expediteur === legacyMyName) ? myName : (m.display_expediteur || m.expediteur))}</div>
+                    <div class="bubble-text">${m.contenu || ''}</div>
+                    ${m.media_url ? `<div style="margin-top:8px;">${m.media_type === 'image' ? `<img src="${m.media_url}" style="max-width:220px; border-radius:8px;">` : `<audio controls src="${m.media_url}"></audio>`}</div>` : ''}
+                </div>`).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+        async function send(dest) {
+            const input = document.getElementById(dest === 'communaute' ? 'commuIn' : 'expertIn');
+            const text = input.value || '';
+            if (!text && !currentMediaUser) return;
+
+            // If media attached we already uploaded it via input or recorder
+            const payload = { contenu: text, destinataire: dest };
+            if (currentMediaUser) {
+                payload.media_url = currentMediaUser.url;
+                payload.media_type = currentMediaUser.media_type;
+            }
+
+            await fetch('/send_message', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            input.value = '';
+            const fileInput = document.getElementById('userFileUpload'); if (fileInput) fileInput.value = '';
+            currentMediaUser = null;
+            loadMessages(dest, dest === 'communaute' ? 'commu-chat' : 'expert-chat');
+        }
+
+        // Setup quick-suggestion buttons and file/audio upload for planter
+        window.addEventListener('load', () => {
+            const suggestions = [
+                "Bonjour, j'ai besoin d'une visite technique svp.",
+                "Problème avec le drone, il n'a pas survolé ma parcelle.",
+                "Mes plantes montrent des taches foliaires, conseillez-vous un traitement ?",
+                "Merci, tout est rétabli après vos recommandations.",
+                "Pouvez-vous envoyer une équipe d'inspection ?"
+            ];
+            const container = document.getElementById('userQuickSuggestions');
+            if (container) {
+                suggestions.forEach(s => {
+                    const btn = document.createElement('button');
+                    btn.className = 'bubble me';
+                    btn.style.padding = '6px 10px';
+                    btn.style.fontSize = '12px';
+                    btn.style.borderRadius = '12px';
+                    btn.style.cursor = 'pointer';
+                    btn.textContent = s.length > 30 ? s.slice(0,30) + '…' : s;
+                    btn.title = s;
+                    btn.onclick = () => { document.getElementById('expertIn').value = s; };
+                    btn.ondblclick = async () => {
+                        await fetch('/send_message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({contenu: s, destinataire: 'admin'}) });
+                        loadMessages('admin', 'expert-chat');
+                    };
+                    container.appendChild(btn);
+                });
+            }
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*,audio/*';
+            fileInput.id = 'userFileUpload';
+            fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            // attach simple UI near expert input
+            const expertArea = document.querySelector('.expert-content > div:last-child');
+            if (expertArea) {
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex'; wrapper.style.gap = '8px'; wrapper.style.marginBottom = '8px';
+                const uploadBtn = document.createElement('button'); uploadBtn.className = 'btn btn-primary'; uploadBtn.textContent = '📎 Joindre';
+                const recordBtn = document.createElement('button'); recordBtn.className = 'btn btn-warning'; recordBtn.textContent = '🎙️ Enregistrer';
+                wrapper.appendChild(uploadBtn); wrapper.appendChild(recordBtn);
+                expertArea.insertBefore(wrapper, expertArea.children[expertArea.children.length-1]);
+
+                uploadBtn.onclick = () => fileInput.click();
+                fileInput.onchange = async (e) => {
+                    const file = e.target.files[0]; if (!file) return;
+                    const fd = new FormData(); fd.append('file', file);
+                    const res = await fetch('/upload_media', { method: 'POST', body: fd }); const j = await res.json();
+                    if (j.success) { currentMediaUser = { url: j.url, media_type: j.media_type }; alert('Fichier téléversé'); }
+                    else alert('Erreur upload');
+                };
+
+                recordBtn.onclick = async () => {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { alert('Enregistrement non supporté'); return; }
+                    if (!mediaRecorderUser) {
+                        try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorderUser = new MediaRecorder(stream); }
+                        catch(e){ alert('Accès micro refusé'); return; }
+                        recordedChunksUser = [];
+                        mediaRecorderUser.ondataavailable = e => { if (e.data.size) recordedChunksUser.push(e.data); };
+                        mediaRecorderUser.onstop = async () => {
+                            const blob = new Blob(recordedChunksUser, { type: 'audio/webm' }); const fd = new FormData(); fd.append('file', blob, 'note.webm');
+                            const res = await fetch('/upload_media', { method: 'POST', body: fd }); const j = await res.json();
+                            if (j.success) { currentMediaUser = { url: j.url, media_type: j.media_type }; alert('Note audio téléversée'); } else alert('Erreur upload');
+                            mediaRecorderUser = null; recordBtn.textContent = '🎙️ Enregistrer';
+                        };
+                        mediaRecorderUser.start(); recordBtn.textContent = '⏹️ Arrêter';
+                    } else {
+                        mediaRecorderUser.stop();
+                    }
+                };
+            }
+        });
+
+        // Populate quick suggestions for planter
+        window.addEventListener('load', () => {
+            const suggestions = [
+                "Bonjour, j'ai besoin d'une visite technique svp.",
+                "Problème avec le drone, il n'a pas survolé ma parcelle.",
+                "Mes plantes montrent des taches foliaires, conseillez-vous un traitement ?",
+                "Merci, tout est rétabli après vos recommandations.",
+                "Pouvez-vous envoyer une équipe d'inspection ?"
+            ];
+            const container = document.getElementById('userQuickSuggestions');
+            if (container) {
+                suggestions.forEach(s => {
+                    const btn = document.createElement('button');
+                    btn.className = 'bubble me';
+                    btn.style.padding = '6px 10px';
+                    btn.style.fontSize = '12px';
+                    btn.style.borderRadius = '12px';
+                    btn.style.cursor = 'pointer';
+                    btn.textContent = s.length > 30 ? s.slice(0,30) + '…' : s;
+                    btn.title = s;
+                    btn.onclick = () => { document.getElementById('expertIn').value = s; };
+                    btn.ondblclick = async () => {
+                        await fetch('/send_message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({contenu: s, destinataire: 'admin'}) });
+                        loadMessages('admin', 'expert-chat');
+                    };
+                    container.appendChild(btn);
+                });
+            }
+        });
+
+        async function loadNews() {
+            try {
+                const res = await fetch('/get_agri_news');
+                const data = await res.json();
+                
+                document.getElementById('news-box').innerHTML = data.map((n, idx) => `
+                    <a href="${n.lien}" target="_blank" style="display:block; color:white; background:rgba(255,255,255,0.1); margin-bottom:14px; border-radius:18px; text-decoration:none; overflow:hidden; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 28px rgba(0,0,0,0.14);">
+                        <div style="height:180px; background:#173117; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                            <div style="position:absolute; width:100%; height:100%; background:linear-gradient(135deg, rgba(212,175,55,0.1), rgba(10,31,10,0.2));"></div>
+                            <img 
+                                id="news-img-${idx}" 
+                                src="${(n.image && (n.image.startsWith('http') || n.image.startsWith('//'))) ? '/image_proxy?url=' + encodeURIComponent(n.image.startsWith('//') ? (location.protocol + n.image) : n.image) : '/static/fond_marche.png'}" 
+                                alt="${n.titre}" 
+                                style="width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:1;"
+                                onerror="if(this.src.indexOf('/static/fond_marche.png') === -1) this.src='/static/fond_marche.png'"
+                                loading="lazy"
+                            >
+                            <div style="position:absolute; width:100%; height:100%; background:rgba(10,31,10,0.3); z-index:0;"></div>
+                        </div>
+                        <div style="padding:16px;">
+                            <div style="font-size: 1rem; font-weight:600; margin-bottom: 10px; color:white;">${n.titre}</div>
+                            ${n.description ? `<div style="font-size: 0.8rem; color: rgba(255,255,255,0.78); margin-bottom: 12px; line-height:1.6;">${n.description}</div>` : ''}
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; font-size:0.72rem; color:rgba(255,255,255,0.62);">
+                                <span>${n.source} • ${n.pays}</span>
+                                ${n.date ? `<span>${new Date(n.date).toLocaleDateString('fr-FR')}</span>` : ''}
+                            </div>
+                        </div>
+                    </a>`).join('');
+            } catch (error) {
+                console.error('Erreur chargement des actualites:', error);
+                document.getElementById('news-box').innerHTML = `<div style="color: #ff6b6b; padding: 20px; text-align:center;">Erreur de chargement des actualites</div>`;
+            }
+        }
+
+        async function loadCacaoData() {
+            try {
+                const res = await fetch('/get_cacao_data');
+                const data = await res.json();
+                const cacaoContainer = document.getElementById('cacao-data');
+
+                if (data.error) {
+                    cacaoContainer.innerHTML = `<div style="color: #ff6b6b; text-align: center; padding: 20px;">${data.error}</div>`;
+                    return;
+                }
+
+                const trendColor = data.trend === 'bullish' ? '#4CAF50' : '#f44336';
+                const changeSymbol = data.change >= 0 ? '+' : '-';
+                const priceUnit = 'FCFA/kg';
+                const volumeLabel = data.source === 'Yahoo Finance' ? 'Volume de contrats' : 'Volume estime';
+                const volumeUnit = data.source === 'Yahoo Finance' ? 'contrats' : 'tonnes';
+                const ciPrices = data.ivory_coast_prices || {};
+
+                cacaoContainer.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:18px;">
+                            <div>
+                                <h3 style="color: var(--gold); margin: 0; font-size: 1.2rem;">Lecture des prix cacao</h3>
+                                <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">Separation claire entre marche international et reperes officiels Cote d'Ivoire</span>
+                            </div>
+                            <div style="font-size:0.75rem; color:rgba(255,255,255,0.68); text-align:right;">
+                                ${data.market || 'Marche'} • Mise a jour : ${data.last_update}
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:15px; margin-bottom:16px;">
+                            <div style="background: rgba(255,255,255,0.07); padding: 16px; border-radius: 14px;">
+                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Prix international</div>
+                                <div style="font-size: 1.9rem; font-weight: 700; color: white;">${formatNumber(data.current_price, 0)}</div>
+                                <div style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 4px;">${priceUnit}</div>
+                                <div style="font-size: 0.88rem; color: ${trendColor}; margin-top: 8px;">
+                                    ${changeSymbol}${formatNumber(Math.abs(data.change), 0)} ${priceUnit} (${changeSymbol}${formatNumber(Math.abs(data.change_percent), 2)}%)
+                                </div>
+                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 10px;">Source : ${data.source || 'Donnee interne'}</div>
+                            </div>
+
+                            <div style="background: rgba(255,255,255,0.07); padding: 16px; border-radius: 14px;">
+                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Prix officiel Cote d'Ivoire</div>
+                                <div style="font-size: 1.9rem; font-weight: 700; color: white;">${formatNumber(ciPrices.official_market_price, 0)}</div>
+                                <div style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 4px;">${priceUnit}</div>
+                                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); margin-top: 10px;">${ciPrices.official_market_label || 'Prix de mise en marche'}</div>
+                            </div>
+
+                            <div style="background: rgba(255,255,255,0.07); padding: 16px; border-radius: 14px;">
+                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Prix bord champ producteur</div>
+                                <div style="font-size: 1.9rem; font-weight: 700; color: white;">${formatNumber(ciPrices.farmgate_price, 0)}</div>
+                                <div style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 4px;">${priceUnit}</div>
+                                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); margin-top: 10px;">${ciPrices.campaign_period || 'Campagne en cours'}</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.82); margin-bottom: 16px; line-height: 1.7; padding: 12px 14px; background: rgba(255,255,255,0.06); border-radius: 12px;">
+                            Lecture rapide : le <strong>prix international</strong> vient du marche mondial. Le <strong>prix officiel Cote d'Ivoire</strong> et le <strong>prix bord champ producteur</strong> servent de repere local pour une lecture plus juste.
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+                                <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-bottom: 5px;">${volumeLabel}</div>
+                                <div style="font-size: 1rem; color: white; font-weight: 600;">${formatNumber(data.volume, 0)} ${volumeUnit}</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+                                <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-bottom: 5px;">RSI</div>
+                                <div style="font-size: 1rem; color: white; font-weight: 600;">${formatNumber(data.indicators?.rsi, 2)}</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+                                <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-bottom: 5px;">Volatilite</div>
+                                <div style="font-size: 1rem; color: white; font-weight: 600;">${formatNumber(data.indicators?.volatility, 2)}%</div>
+                            </div>
+                        </div>
+
+                        ${data.quality_grades ? `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-bottom: 8px;">Prix par grade, en ${priceUnit} :</div>
+                            <div style="display: flex; gap: 10px; font-size: 0.8rem; flex-wrap: wrap;">
+                                <span style="background: #4CAF50; color: white; padding: 4px 8px; border-radius: 4px;">Grade 1 : ${formatNumber(data.quality_grades.grade_1, 0)} ${priceUnit}</span>
+                                <span style="background: #FF9800; color: white; padding: 4px 8px; border-radius: 4px;">Grade 2 : ${formatNumber(data.quality_grades.grade_2, 0)} ${priceUnit}</span>
+                                <span style="background: #f44336; color: white; padding: 4px 8px; border-radius: 4px;">Grade 3 : ${formatNumber(data.quality_grades.grade_3, 0)} ${priceUnit}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${data.production_stats ? `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-bottom: 8px;">Statistiques de production :</div>
+                            <div style="font-size: 0.8rem; color: white;">
+                                <strong>Saison ${data.production_stats.current_season} :</strong> ${data.production_stats.estimated_production} • ${data.production_stats.export_target}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-bottom: 10px;">
+                            <strong>Prevision court terme :</strong> ${data.forecast?.short_term || 'N/A'}
+                        </div>
+                    </div>
+                `;
+
+                setTimeout(loadCacaoData, 30000);
+            } catch (error) {
+                console.error('Erreur chargement des donnees cacao :', error);
+                document.getElementById('cacao-data').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 20px;">
+                        Erreur de chargement des donnees cacao
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

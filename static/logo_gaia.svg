@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40">
+  <rect width="120" height="40" rx="6" ry="6" fill="#0a1f0a"/>
+  <g transform="translate(12,8)">
+    <circle cx="10" cy="12" r="8" fill="#d4af37" />
+    <path d="M26 6c6 0 12 6 12 12s-6 12-12 12" stroke="#d4af37" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="48" y="26" font-family="Poppins, sans-serif" font-size="14" fill="#d4af37">RELYAS ADMIN SOC</text>
+</svg>
