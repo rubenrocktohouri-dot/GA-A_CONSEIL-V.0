@@ -7,36 +7,101 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #D4AF37; --forest: #0A1F0A; --bg: #F8F9FA; --w: #ffffff; }
+        :root { --gold: #c9a227; --forest: #1a2e1a; --bg: #f5f5f5; --w: #ffffff; }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); padding-bottom: 90px; }
         .home-header { background: var(--forest); padding: 50px 25px 90px 25px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; color: var(--w); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .home-header h2 { margin: 0; font-size: 1.8rem; }
         .home-header p { margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem; }
         .section-title { padding: 25px 20px 15px 20px; font-size: 1.4rem; font-weight: 600; color: var(--forest); }
-        .container { padding: 0 20px; margin-top: -50px; }
+        .container { padding: 0 16px 80px; margin-top: -50px; }
         .main-card { background: var(--w); border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .sensor-card { background: var(--w); padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
         .sensor-card i { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
         .sensor-card span { display: block; font-size: 0.7rem; color: #888; font-weight: 600; margin-bottom: 5px; }
         .sensor-card b { font-size: 1.2rem; color: var(--forest); }
+        .home-block { margin-top: 24px; }
+        .home-block-title { color: var(--forest); font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
+        .quick-actions-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .quick-action { align-items: center; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; font: 700 0.83rem 'Poppins', sans-serif; gap: 7px; height: 80px; justify-content: center; padding: 0 10px; text-align: center; }
+        .quick-action i { font-size: 1.3rem; }
+        .quick-action.primary { background: var(--forest); border: 1px solid var(--forest); color: var(--w); }
+        .quick-action.secondary { background: var(--w); border: 1px solid var(--forest); color: var(--forest); }
+        .recommendation-list { display: flex; flex-direction: column; gap: 12px; }
+        .recommendation-card { background: var(--w); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); color: #253025; font-size: 0.9rem; line-height: 1.55; padding: 14px 16px; }
+        .recommendation-card.gold { border-left: 6px solid var(--gold); }
+        .recommendation-card.green { border-left: 6px solid var(--forest); }
+        .weather-card { align-items: center; background: var(--w); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); display: flex; gap: 14px; padding: 16px; }
+        .weather-icon { align-items: center; background: rgba(201,162,39,0.14); border-radius: 50%; color: var(--gold); display: flex; flex: 0 0 auto; font-size: 1.65rem; height: 52px; justify-content: center; width: 52px; }
+        .weather-temp { color: var(--forest); font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+        .weather-desc { color: #666; font-size: 0.82rem; margin-top: 4px; }
+        #social { background: #f5f5f5; min-height: calc(100vh - 90px); padding-bottom: 110px; }
+        .community-header { background: var(--forest); color: var(--w); padding: 28px 20px 30px; }
+        .community-header h2 { margin: 0; font-size: 1.45rem; line-height: 1.2; }
+        .community-header p { margin: 8px 0 0; color: rgba(255,255,255,0.76); font-size: 0.86rem; line-height: 1.5; }
+        .community-search-wrap { background: var(--forest); padding: 0 16px 18px; }
+        .community-search { background: var(--w); border-radius: 999px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 10px; padding: 12px 15px; }
+        .community-search i { color: var(--gold); font-size: 0.95rem; }
+        .community-search input { border: none; color: #1f2a1f; flex: 1; font: 400 0.9rem 'Poppins', sans-serif; min-width: 0; outline: none; }
+        .community-feed { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .community-post { background: var(--w); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.07); padding: 16px; }
+        .post-head { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+        .post-avatar { border-radius: 50%; color: var(--w); display: grid; flex: 0 0 auto; font-size: 0.92rem; font-weight: 700; height: 42px; place-items: center; width: 42px; }
+        .post-author { color: var(--forest); font-size: 0.93rem; font-weight: 700; line-height: 1.2; }
+        .post-time { color: #888; font-size: 0.74rem; margin-top: 3px; }
+        .post-text { color: #253025; font-size: 0.92rem; line-height: 1.62; margin: 0 0 14px; }
+        .post-actions { border-top: 1px solid #eeeeee; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-top: 10px; }
+        .post-action { align-items: center; background: transparent; border: none; border-radius: 10px; color: var(--forest); cursor: pointer; display: inline-flex; font: 600 0.78rem 'Poppins', sans-serif; gap: 6px; justify-content: center; min-width: 0; padding: 9px 4px; white-space: nowrap; }
+        .post-action:hover { background: #f5f5f5; }
+        .community-fab { background: var(--gold); border: none; border-radius: 50%; bottom: 80px; box-shadow: 0 12px 26px rgba(201,162,39,0.34); color: var(--w); cursor: pointer; display: grid; font-size: 1.35rem; height: 58px; place-items: center; position: fixed; right: 20px; width: 58px; z-index: 1101; }
+        .post-modal-backdrop { align-items: center; background: rgba(0,0,0,0.58); display: none; inset: 0; justify-content: center; padding: 18px; position: fixed; z-index: 1300; }
+        .post-modal-backdrop.active { display: flex; }
+        .post-modal { background: var(--w); border-radius: 12px; box-shadow: 0 20px 55px rgba(0,0,0,0.26); max-width: 440px; padding: 18px; width: 100%; }
+        .post-modal-header { align-items: center; display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+        .post-modal-header h3 { color: var(--forest); font-size: 1.1rem; line-height: 1.2; margin: 0; }
+        .post-modal-close { background: #f5f5f5; border: none; border-radius: 50%; color: var(--forest); cursor: pointer; display: grid; flex: 0 0 auto; height: 36px; place-items: center; width: 36px; }
+        .post-modal textarea { border: 1px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; color: #1f2a1f; font: 400 0.92rem 'Poppins', sans-serif; line-height: 1.5; min-height: 120px; outline: none; padding: 12px; resize: vertical; width: 100%; }
+        .post-modal textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
+        .post-publish { background: var(--gold); border: none; border-radius: 8px; color: var(--w); cursor: pointer; font: 700 0.92rem 'Poppins', sans-serif; margin-top: 14px; padding: 13px 16px; width: 100%; }
         #market { background: url('/static/fond_marche.png') center/cover; min-height: 85vh; position: relative; border-radius: 30px 30px 0 0; overflow: hidden; }
         #market::before { content:""; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,31,10,0.85); }
         .market-content { position: relative; z-index: 2; padding: 25px; color: white; }
-        #chat { background: url('/static/fond_gaia.png') center/cover; min-height: 85vh; position: relative; border-radius: 30px 30px 0 0; overflow: hidden; }
-        #chat::before { content:""; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,31,10,0.7); backdrop-filter: blur(15px); }
-        .expert-content { position: relative; z-index: 2; padding: 20px; display: flex; flex-direction: column; height: 75vh; }
+        #chat { background: #f5f5f5; min-height: calc(100vh - 90px); padding: 0 0 90px; box-sizing: border-box; }
+        .expert-content { background: var(--w); border-radius: 0; box-shadow: none; display: flex; flex-direction: column; height: calc(100vh - 90px); min-height: 560px; width: 100%; margin: 0; overflow: hidden; }
+        .expert-header { background: var(--forest); color: var(--w); padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+        .expert-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--gold); color: var(--forest); display: grid; place-items: center; font-size: 1.1rem; flex: 0 0 auto; }
+        .expert-title { margin: 0; font-size: 1.05rem; font-weight: 600; line-height: 1.2; color: var(--w); }
+        .expert-status { margin-top: 3px; font-size: 0.76rem; color: rgba(255,255,255,0.7); }
+        .expert-messages { background: #ece5dd; background-image: radial-gradient(rgba(26,46,26,0.05) 1px, transparent 1px); background-size: 18px 18px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
         .chat-box { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 12px; }
         .bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.9rem; line-height: 1.45; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 10px 24px rgba(10,31,10,0.08); }
         .bubble.me { background: linear-gradient(135deg, #d4af37, #e6c65b); color: var(--forest); align-self: flex-end; border-bottom-right-radius: 2px; border: 1px solid rgba(120, 92, 12, 0.18); }
         .bubble.other { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
-        #social .bubble.other { background: linear-gradient(135deg, #f4f0e4, #ffffff); border: 1px solid rgba(10,31,10,0.08); color: #132313; box-shadow: 0 8px 22px rgba(10,31,10,0.08); }
-        #social .bubble-name { color: #4d694d; }
-        #chat .bubble.other { background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.18); color: white; }
-        #chat .bubble-name { color: #e6c65b; }
-        #social .chat-box { padding-bottom: 90px; }
+        #chat .chat-box { padding: 18px; }
+        #chat .bubble { border-radius: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); max-width: min(78%, 520px); }
+        #chat .bubble.me { background: var(--forest); border: 1px solid var(--forest); color: var(--w); align-self: flex-end; }
+        #chat .bubble.other { background: var(--w); border: 1px solid #e0e0e0; color: #1f2a1f; align-self: flex-start; }
+        #chat .bubble-name { color: inherit; font-size: 0.72rem; opacity: 0.7; }
+        #chat .bubble-time { align-self: flex-end; font-size: 0.68rem; opacity: 0.68; }
+        .expert-welcome { align-items: flex-end; display: flex; gap: 8px; max-width: min(86%, 560px); }
+        .expert-welcome-avatar { background: var(--forest); border-radius: 50%; color: var(--w); display: grid; flex: 0 0 auto; font-size: 0.9rem; height: 34px; place-items: center; width: 34px; }
+        .expert-welcome .bubble { max-width: 100%; }
         .bubble-name { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.2px; opacity: 0.92; }
         .bubble-text { font-size: 0.96rem; font-weight: 400; word-break: break-word; }
+        .expert-composer { background: var(--w); border-top: 1px solid #e0e0e0; padding: 10px 12px 12px; flex: 0 0 auto; position: sticky; bottom: 0; }
+        .quick-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; min-width: 0; }
+        .quick-label { color: var(--forest); font-size: 0.76rem; font-weight: 700; white-space: nowrap; }
+        .quick-scroll { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding: 2px 2px 6px; scrollbar-width: thin; min-width: 0; }
+        .quick-chip { background: var(--w); border: 1px solid var(--gold); border-radius: 999px; color: var(--forest); cursor: pointer; flex: 0 0 auto; font: 600 0.76rem 'Poppins', sans-serif; max-width: 230px; padding: 7px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .quick-chip:hover { background: #fbf7ea; }
+        .expert-action { background: transparent; border: none; border-radius: 50%; color: var(--forest); cursor: pointer; flex: 0 0 auto; height: 40px; width: 40px; display: grid; place-items: center; font-size: 1rem; }
+        .expert-action:hover { background: #f5f5f5; }
+        .expert-action.recording { background: #f5f5f5; color: #b84a3a; }
+        .expert-input-row { display: flex; align-items: center; gap: 10px; }
+        .expert-input { background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 999px; color: #1f2a1f; flex: 1; font: 400 0.92rem 'Poppins', sans-serif; min-width: 0; outline: none; padding: 13px 16px; }
+        .expert-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
+        .expert-send { background: var(--gold); border: none; border-radius: 50%; color: var(--w); cursor: pointer; flex: 0 0 auto; width: 46px; height: 46px; display: grid; place-items: center; font-size: 1rem; box-shadow: 0 8px 18px rgba(201,162,39,0.3); }
+        .expert-send:active { transform: translateY(1px); }
         .bottom-nav { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--forest); height: 75px; border-radius: 25px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000; }
         .nav-link { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; text-decoration: none; transition: 0.3s; }
         .nav-link.active { color: var(--gold); transform: translateY(-5px); }
@@ -44,6 +109,16 @@
         .nav-link span { font-size: 0.65rem; font-weight: 600; margin-top: 4px; display: block; }
         .section { display: none; }
         .section.active { display: block; animation: fadeInUp 0.4s ease; }
+        @media (max-width: 600px) {
+            #chat { padding: 0 0 90px; }
+            .expert-content { height: calc(100vh - 90px); min-height: 0; }
+            #chat .bubble { max-width: 86%; }
+            .expert-header { padding: 14px 15px; }
+            .quick-row { align-items: flex-start; flex-direction: column; gap: 6px; }
+            .quick-scroll { width: 100%; }
+            .expert-input-row { gap: 6px; }
+            .expert-action { height: 38px; width: 38px; }
+        }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -73,15 +148,115 @@
                     <b>{{ user.liquide }}%</b>
                 </div>
             </div>
+            <div class="home-block">
+                <h3 class="home-block-title">Actions rapides</h3>
+                <div class="quick-actions-grid">
+                    <button class="quick-action primary" type="button">
+                        <i class="fa-solid fa-helicopter"></i>
+                        <span>Lancer drone</span>
+                    </button>
+                    <button class="quick-action primary" type="button">
+                        <i class="fa-solid fa-droplet"></i>
+                        <span>Irrigation</span>
+                    </button>
+                    <button class="quick-action secondary" type="button">
+                        <i class="fa-solid fa-chart-column"></i>
+                        <span>Rapport parcelle</span>
+                    </button>
+                    <button class="quick-action secondary" type="button">
+                        <i class="fa-solid fa-seedling"></i>
+                        <span>Diagnostic plantes</span>
+                    </button>
+                </div>
+            </div>
+            <div class="home-block">
+                <h3 class="home-block-title">Alertes & Recommandations</h3>
+                <div class="recommendation-list">
+                    <div class="recommendation-card gold">Humidité optimale détectée. Pas d'irrigation nécessaire aujourd'hui.</div>
+                    <div class="recommendation-card green">Prochain vol drone prévu dans 2h</div>
+                </div>
+            </div>
+            <div class="home-block">
+                <h3 class="home-block-title">Météo locale</h3>
+                <div class="weather-card">
+                    <div class="weather-icon"><i class="fa-solid fa-sun"></i></div>
+                    <div>
+                        <div class="weather-temp">32°C / 24°C</div>
+                        <div class="weather-desc">Ensoleillé - Yamoussoukro</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="social" class="section">
-        <div class="section-title">Espace Communaute</div>
-        <div id="commu-chat" class="chat-box" style="height: 60vh;"></div>
-        <div style="padding:15px; display:flex; gap:10px; background:white; position:fixed; bottom:110px; left:20px; right:20px; border-radius:20px; box-shadow:0 5px 15px rgba(0,0,0,0.05);">
-            <input type="text" id="commuIn" placeholder="Discutez ici..." style="flex:1; border:none; outline:none; font-family:inherit;">
-            <button onclick="send('communaute')" style="background:var(--forest); color:white; border:none; width:45px; height:45px; border-radius:15px;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="community-header">
+            <h2>Espace Communauté</h2>
+            <p>Partagez vos expériences avec d'autres agriculteurs</p>
+        </div>
+        <div class="community-search-wrap">
+            <div class="community-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" placeholder="Rechercher une discussion, un conseil...">
+            </div>
+        </div>
+        <div class="community-feed">
+            <article class="community-post">
+                <div class="post-head">
+                    <div class="post-avatar" style="background:#2f7d46;">AY</div>
+                    <div>
+                        <div class="post-author">Awa Yao</div>
+                        <div class="post-time">il y a 2h</div>
+                    </div>
+                </div>
+                <p class="post-text">J'ai remarqué des taches jaunes sur quelques feuilles de cacao après les dernières pluies. Est-ce que quelqu'un a déjà traité ce problème naturellement ?</p>
+                <div class="post-actions">
+                    <button class="post-action" type="button"><span>👍</span><span>J'aime</span></button>
+                    <button class="post-action" type="button"><span>💬</span><span>Commenter</span></button>
+                    <button class="post-action" type="button"><span>🔁</span><span>Partager</span></button>
+                </div>
+            </article>
+            <article class="community-post">
+                <div class="post-head">
+                    <div class="post-avatar" style="background:#c9a227;">KP</div>
+                    <div>
+                        <div class="post-author">Koffi Paul</div>
+                        <div class="post-time">il y a 5h</div>
+                    </div>
+                </div>
+                <p class="post-text">Bonne récolte cette semaine sur ma parcelle nord. Le paillage et le suivi d'humidité m'ont beaucoup aidé à garder les jeunes plants en forme.</p>
+                <div class="post-actions">
+                    <button class="post-action" type="button"><span>👍</span><span>J'aime</span></button>
+                    <button class="post-action" type="button"><span>💬</span><span>Commenter</span></button>
+                    <button class="post-action" type="button"><span>🔁</span><span>Partager</span></button>
+                </div>
+            </article>
+            <article class="community-post">
+                <div class="post-head">
+                    <div class="post-avatar" style="background:#6b5b95;">MT</div>
+                    <div>
+                        <div class="post-author">Mariam Traoré</div>
+                        <div class="post-time">hier</div>
+                    </div>
+                </div>
+                <p class="post-text">Petit conseil : inspectez les cabosses tôt le matin. On repère plus vite les signes de maladie et on évite de perdre du temps pendant les fortes chaleurs.</p>
+                <div class="post-actions">
+                    <button class="post-action" type="button"><span>👍</span><span>J'aime</span></button>
+                    <button class="post-action" type="button"><span>💬</span><span>Commenter</span></button>
+                    <button class="post-action" type="button"><span>🔁</span><span>Partager</span></button>
+                </div>
+            </article>
+        </div>
+        <button id="openPostModal" class="community-fab" type="button" aria-label="Créer un nouveau post"><i class="fa-solid fa-plus"></i></button>
+        <div id="postModalBackdrop" class="post-modal-backdrop" aria-hidden="true">
+            <div class="post-modal" role="dialog" aria-modal="true" aria-labelledby="postModalTitle">
+                <div class="post-modal-header">
+                    <h3 id="postModalTitle">Nouveau post</h3>
+                    <button id="closePostModal" class="post-modal-close" type="button" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <textarea id="newPostText" rows="4" placeholder="Partagez votre expérience, un conseil, une question..."></textarea>
+                <button id="publishPost" class="post-publish" type="button">Publier</button>
+            </div>
         </div>
     </div>
 
@@ -96,19 +271,27 @@
 
     <div id="chat" class="section">
         <div class="expert-content">
-            <h2 style="color:var(--gold);">Conseil Expert</h2>
-            <div id="expert-chat" class="chat-box"></div>
-            <div style="display:flex; gap:10px; margin-top:15px; background:rgba(255,255,255,0.1); padding:10px; border-radius:20px; backdrop-filter:blur(10px);">
-                    <div style="display:flex; flex-direction:column; gap:8px; width:100%;">
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <strong style="color:var(--gold);">Messages rapides :</strong>
-                            <div id="userQuickSuggestions" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
-                        </div>
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <input type="text" id="expertIn" placeholder="Posez une question..." style="flex:1; background:transparent; border:none; color:white; outline:none; font-family:inherit;">
-                            <button onclick="send('admin')" style="background:var(--gold); border:none; width:45px; height:45px; border-radius:12px; color:var(--forest);"><i class="fa-solid fa-comment-dots"></i></button>
-                        </div>
-                    </div>
+            <div class="expert-header">
+                <div class="expert-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+                <div>
+                    <h2 class="expert-title">Conseil Expert</h2>
+                    <div class="expert-status">Assistance GAIA</div>
+                </div>
+            </div>
+            <div class="expert-messages">
+                <div id="expert-chat" class="chat-box"></div>
+            </div>
+            <div class="expert-composer">
+                <div class="quick-row">
+                    <span class="quick-label">Messages rapides</span>
+                    <div id="userQuickSuggestions" class="quick-scroll"></div>
+                </div>
+                <div class="expert-input-row">
+                    <button id="expertUploadBtn" class="expert-action" type="button" aria-label="Joindre un fichier"><i class="fa-solid fa-paperclip"></i></button>
+                    <button id="expertRecordBtn" class="expert-action" type="button" aria-label="Enregistrer une note audio"><i class="fa-solid fa-microphone"></i></button>
+                    <input type="text" id="expertIn" class="expert-input" placeholder="Posez une question...">
+                    <button class="expert-send" onclick="send('admin')" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -135,6 +318,77 @@
         let mediaRecorderUser = null;
         let recordedChunksUser = [];
 
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getUserInitials(name) {
+            const parts = String(name || 'GA').trim().split(/\s+/).filter(Boolean);
+            if (!parts.length) return 'GA';
+            if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+
+        function buildCommunityPost(author, text, time, avatarColor = '#1a2e1a') {
+            const article = document.createElement('article');
+            article.className = 'community-post';
+            article.innerHTML = `
+                <div class="post-head">
+                    <div class="post-avatar" style="background:${avatarColor};">${escapeHtml(getUserInitials(author))}</div>
+                    <div>
+                        <div class="post-author">${escapeHtml(author)}</div>
+                        <div class="post-time">${escapeHtml(time)}</div>
+                    </div>
+                </div>
+                <p class="post-text">${escapeHtml(text)}</p>
+                <div class="post-actions">
+                    <button class="post-action" type="button"><span>👍</span><span>J'aime</span></button>
+                    <button class="post-action" type="button"><span>💬</span><span>Commenter</span></button>
+                    <button class="post-action" type="button"><span>🔁</span><span>Partager</span></button>
+                </div>
+            `;
+            return article;
+        }
+
+        function setupCommunityPostModal() {
+            const openBtn = document.getElementById('openPostModal');
+            const backdrop = document.getElementById('postModalBackdrop');
+            const closeBtn = document.getElementById('closePostModal');
+            const textarea = document.getElementById('newPostText');
+            const publishBtn = document.getElementById('publishPost');
+            const feed = document.querySelector('.community-feed');
+            if (!openBtn || !backdrop || !closeBtn || !textarea || !publishBtn || !feed) return;
+
+            const closeModal = () => {
+                backdrop.classList.remove('active');
+                backdrop.setAttribute('aria-hidden', 'true');
+            };
+            const openModal = () => {
+                backdrop.classList.add('active');
+                backdrop.setAttribute('aria-hidden', 'false');
+                textarea.focus();
+            };
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', (event) => {
+                if (event.target === backdrop) closeModal();
+            });
+            publishBtn.addEventListener('click', () => {
+                const text = textarea.value.trim();
+                if (!text) return;
+                const author = legacyMyName || myName || 'Utilisateur GAIA';
+                feed.insertBefore(buildCommunityPost(author, text, 'À l’instant'), feed.firstChild);
+                textarea.value = '';
+                closeModal();
+            });
+        }
+
         function formatNumber(value, decimals = 0) {
             if (value === null || value === undefined || Number.isNaN(Number(value))) {
                 return 'N/A';
@@ -150,9 +404,43 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            if (id === 'social') loadMessages('communaute', 'commu-chat');
             if (id === 'chat') loadMessages('admin', 'expert-chat');
             if (id === 'market') { loadNews(); loadCacaoData(); }
+        }
+
+        function renderExpertWelcome(box) {
+            if (!box || box.dataset.welcomeRendered === 'true') return;
+            const welcome = document.createElement('div');
+            welcome.className = 'expert-welcome';
+            welcome.innerHTML = `
+                <div class="expert-welcome-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+                <div class="bubble other">
+                    <div class="bubble-name">Assistant GAIA</div>
+                    <div class="bubble-text">Bonjour ! Je suis votre assistant GAIA. Comment puis-je vous aider aujourd'hui ?</div>
+                </div>
+            `;
+            box.insertBefore(welcome, box.firstChild);
+            box.dataset.welcomeRendered = 'true';
+        }
+
+        function getCurrentChatTime() {
+            return new Date().toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function appendExpertChatBubble(text, type = 'me') {
+            const box = document.getElementById('expert-chat');
+            if (!box) return;
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${type}`;
+            bubble.innerHTML = `
+                <div class="bubble-text">${escapeHtml(text)}</div>
+                <div class="bubble-time">${getCurrentChatTime()}</div>
+            `;
+            box.appendChild(bubble);
+            box.scrollTop = box.scrollHeight;
         }
 
         async function loadMessages(dest, boxId) {
@@ -163,14 +451,57 @@
                 <div class="bubble ${(m.display_expediteur === myName || m.expediteur === legacyMyName) ? 'me' : 'other'}">
                     <div class="bubble-name">${boxId === 'commu-chat' ? myName : ((m.display_expediteur === myName || m.expediteur === legacyMyName) ? myName : (m.display_expediteur || m.expediteur))}</div>
                     <div class="bubble-text">${m.contenu || ''}</div>
+                    <div class="bubble-time">${m.date ? new Date(m.date).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : ''}</div>
                     ${m.media_url ? `<div style="margin-top:8px;">${m.media_type === 'image' ? `<img src="${m.media_url}" style="max-width:220px; border-radius:8px;">` : `<audio controls src="${m.media_url}"></audio>`}</div>` : ''}
                 </div>`).join('');
+            delete box.dataset.welcomeRendered;
+            if (boxId === 'expert-chat') renderExpertWelcome(box);
             box.scrollTop = box.scrollHeight;
         }
         async function send(dest) {
             const input = document.getElementById(dest === 'communaute' ? 'commuIn' : 'expertIn');
-            const text = input.value || '';
+            const text = (input.value || '').trim();
             if (!text && !currentMediaUser) return;
+
+            if (dest === 'admin') {
+                const payload = { contenu: text, destinataire: dest };
+                if (currentMediaUser) {
+                    payload.media_url = currentMediaUser.url;
+                    payload.media_type = currentMediaUser.media_type;
+                }
+                appendExpertChatBubble(text || 'Pièce jointe envoyée', 'me');
+                input.value = '';
+                const fileInput = document.getElementById('userFileUpload'); if (fileInput) fileInput.value = '';
+                currentMediaUser = null;
+
+                try {
+                    const res = await fetch('/send_message', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload)
+                    });
+                    const rawResponse = await res.text();
+                    let data = {};
+                    try {
+                        data = rawResponse ? JSON.parse(rawResponse) : {};
+                    } catch (parseError) {
+                        console.error('Réponse non JSON de /send_message:', rawResponse);
+                        throw new Error(`Réponse serveur invalide (${res.status})`);
+                    }
+                    console.log('Réponse /send_message:', res.status, data);
+
+                    if (res.ok && (data.status === 'ok' || data.success)) {
+                        loadMessages('admin', 'expert-chat');
+                    } else {
+                        appendExpertChatBubble(data.message || "Le message n'a pas pu être envoyé.", 'other');
+                    }
+                } catch (error) {
+                    console.error('Erreur envoi /send_message:', error);
+                    appendExpertChatBubble(error.message || "Le message n'a pas pu être envoyé.", 'other');
+                }
+                return;
+            }
 
             // If media attached we already uploaded it via input or recorder
             const payload = { contenu: text, destinataire: dest };
@@ -182,6 +513,7 @@
             await fetch('/send_message', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'same-origin',
                 body: JSON.stringify(payload)
             });
             input.value = '';
@@ -192,6 +524,14 @@
 
         // Setup quick-suggestion buttons and file/audio upload for planter
         window.addEventListener('load', () => {
+            setupCommunityPostModal();
+            setInterval(() => {
+                const chatSection = document.getElementById('chat');
+                if (chatSection && chatSection.classList.contains('active')) {
+                    loadMessages('admin', 'expert-chat');
+                }
+            }, 5000);
+
             const suggestions = [
                 "Bonjour, j'ai besoin d'une visite technique svp.",
                 "Problème avec le drone, il n'a pas survolé ma parcelle.",
@@ -201,20 +541,14 @@
             ];
             const container = document.getElementById('userQuickSuggestions');
             if (container) {
+                container.innerHTML = '';
                 suggestions.forEach(s => {
                     const btn = document.createElement('button');
-                    btn.className = 'bubble me';
-                    btn.style.padding = '6px 10px';
-                    btn.style.fontSize = '12px';
-                    btn.style.borderRadius = '12px';
-                    btn.style.cursor = 'pointer';
-                    btn.textContent = s.length > 30 ? s.slice(0,30) + '…' : s;
+                    btn.className = 'quick-chip';
+                    btn.type = 'button';
+                    btn.textContent = s;
                     btn.title = s;
                     btn.onclick = () => { document.getElementById('expertIn').value = s; };
-                    btn.ondblclick = async () => {
-                        await fetch('/send_message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({contenu: s, destinataire: 'admin'}) });
-                        loadMessages('admin', 'expert-chat');
-                    };
                     container.appendChild(btn);
                 });
             }
@@ -225,15 +559,20 @@
             fileInput.id = 'userFileUpload';
             fileInput.style.display = 'none';
             document.body.appendChild(fileInput);
-            // attach simple UI near expert input
-            const expertArea = document.querySelector('.expert-content > div:last-child');
-            if (expertArea) {
-                const wrapper = document.createElement('div');
-                wrapper.style.display = 'flex'; wrapper.style.gap = '8px'; wrapper.style.marginBottom = '8px';
-                const uploadBtn = document.createElement('button'); uploadBtn.className = 'btn btn-primary'; uploadBtn.textContent = '📎 Joindre';
-                const recordBtn = document.createElement('button'); recordBtn.className = 'btn btn-warning'; recordBtn.textContent = '🎙️ Enregistrer';
-                wrapper.appendChild(uploadBtn); wrapper.appendChild(recordBtn);
-                expertArea.insertBefore(wrapper, expertArea.children[expertArea.children.length-1]);
+            const expertInput = document.getElementById('expertIn');
+            if (expertInput) {
+                expertInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        send('admin');
+                    }
+                });
+            }
+            const uploadBtn = document.getElementById('expertUploadBtn');
+            const recordBtn = document.getElementById('expertRecordBtn');
+            const expertChat = document.getElementById('expert-chat');
+            renderExpertWelcome(expertChat);
+            if (uploadBtn && recordBtn) {
 
                 uploadBtn.onclick = () => fileInput.click();
                 fileInput.onchange = async (e) => {
@@ -255,43 +594,13 @@
                             const blob = new Blob(recordedChunksUser, { type: 'audio/webm' }); const fd = new FormData(); fd.append('file', blob, 'note.webm');
                             const res = await fetch('/upload_media', { method: 'POST', body: fd }); const j = await res.json();
                             if (j.success) { currentMediaUser = { url: j.url, media_type: j.media_type }; alert('Note audio téléversée'); } else alert('Erreur upload');
-                            mediaRecorderUser = null; recordBtn.textContent = '🎙️ Enregistrer';
+                            mediaRecorderUser = null; recordBtn.classList.remove('recording'); recordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
                         };
-                        mediaRecorderUser.start(); recordBtn.textContent = '⏹️ Arrêter';
+                        mediaRecorderUser.start(); recordBtn.classList.add('recording'); recordBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
                     } else {
                         mediaRecorderUser.stop();
                     }
                 };
-            }
-        });
-
-        // Populate quick suggestions for planter
-        window.addEventListener('load', () => {
-            const suggestions = [
-                "Bonjour, j'ai besoin d'une visite technique svp.",
-                "Problème avec le drone, il n'a pas survolé ma parcelle.",
-                "Mes plantes montrent des taches foliaires, conseillez-vous un traitement ?",
-                "Merci, tout est rétabli après vos recommandations.",
-                "Pouvez-vous envoyer une équipe d'inspection ?"
-            ];
-            const container = document.getElementById('userQuickSuggestions');
-            if (container) {
-                suggestions.forEach(s => {
-                    const btn = document.createElement('button');
-                    btn.className = 'bubble me';
-                    btn.style.padding = '6px 10px';
-                    btn.style.fontSize = '12px';
-                    btn.style.borderRadius = '12px';
-                    btn.style.cursor = 'pointer';
-                    btn.textContent = s.length > 30 ? s.slice(0,30) + '…' : s;
-                    btn.title = s;
-                    btn.onclick = () => { document.getElementById('expertIn').value = s; };
-                    btn.ondblclick = async () => {
-                        await fetch('/send_message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({contenu: s, destinataire: 'admin'}) });
-                        loadMessages('admin', 'expert-chat');
-                    };
-                    container.appendChild(btn);
-                });
             }
         });
 
