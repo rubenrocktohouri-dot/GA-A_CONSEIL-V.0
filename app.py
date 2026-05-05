@@ -605,35 +605,39 @@ def remember_login():
 def send_message():
     current_user = get_current_user()
     if not current_user:
-        return jsonify({'success': False, 'message': 'Non authentifie'}), 401
+        return jsonify({'status': 'error', 'success': False, 'message': 'Non authentifie'}), 401
 
-    data = request.json or {}
+    data = request.get_json(silent=True) or {}
     dest = data.get('destinataire', 'communaute')
     contenu = (data.get('contenu') or '').strip()
-
-    if not contenu:
-        return jsonify({'success': False, 'message': 'Message vide.'}), 400
-
     media_url = data.get('media_url')
     media_type = data.get('media_type')
 
-    if dest == 'communaute':
-        msg = Message(expediteur=current_user.username, destinataire='communaute', contenu=contenu, media_url=media_url, media_type=media_type)
-        db.session.add(msg)
-        db.session.commit()
-        return jsonify({'success': True})
+    if not contenu and not media_url:
+        return jsonify({'status': 'error', 'success': False, 'message': 'Message vide.'}), 400
 
-    if dest == 'admin':
-        admin = get_primary_admin(exclude_username=current_user.username)
-        if not admin:
-            return jsonify({'success': False, 'message': 'Aucun administrateur disponible.'}), 404
+    try:
+        if dest == 'communaute':
+            msg = Message(expediteur=current_user.username, destinataire='communaute', contenu=contenu, media_url=media_url, media_type=media_type)
+            db.session.add(msg)
+            db.session.commit()
+            return jsonify({'status': 'ok', 'success': True, 'message': 'Message envoye.'})
 
-        msg = Message(expediteur=current_user.username, destinataire=admin.username, contenu=contenu, media_url=media_url, media_type=media_type)
-        db.session.add(msg)
-        db.session.commit()
-        return jsonify({'success': True})
+        if dest == 'admin':
+            admin = get_primary_admin(exclude_username=current_user.username)
+            if not admin:
+                return jsonify({'status': 'error', 'success': False, 'message': 'Aucun administrateur disponible.'}), 404
 
-    return jsonify({'success': False, 'message': 'Destination invalide.'}), 400
+            msg = Message(expediteur=current_user.username, destinataire=admin.username, contenu=contenu, media_url=media_url, media_type=media_type)
+            db.session.add(msg)
+            db.session.commit()
+            return jsonify({'status': 'ok', 'success': True, 'message': 'Message envoye.', 'admin': admin.username})
+
+        return jsonify({'status': 'error', 'success': False, 'message': 'Destination invalide.'}), 400
+    except Exception as exc:
+        db.session.rollback()
+        app.logger.exception('Erreur /send_message')
+        return jsonify({'status': 'error', 'success': False, 'message': f'Erreur serveur: {exc}'}), 500
 
 
 @app.route('/get_messages')
